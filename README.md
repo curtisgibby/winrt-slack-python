@@ -48,7 +48,8 @@ The script will attempt to:
 - set your status to the now-playing text including the artist and title and the album-art emoji
 
 ```plaintext
-[ ] 17:16:14 - Attempting to set status: Now Playing: INXS - Devil Inside
+[ ] 17:16:14 - Attempting to set status: Now Playing: INXS - Devil Inside [my-album-art]
+[ ] 17:20:32 - Attempting to set status: Now Playing: Adele - Crazy for You [radio]
 ```
 
 If the script is unable to create the album-art emoji (because of a bad token, no local album art, whatever), it will try to set the status using a standard emoji instead, randomly picking one of the following:
