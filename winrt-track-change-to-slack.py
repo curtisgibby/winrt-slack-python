@@ -155,7 +155,7 @@ def set_slack_status():
         'token': slack_token,
     }
 
-    print('[ ] \u001b[36m' + strftime(time_format) + ' - Attempting to set status: \u001b[0m' + status_text + ' ', end='\r')
+    print('[ ] \u001b[36m' + strftime(time_format) + ' - Attempting to set status: \u001b[0m' + status_text + ' \u001b[33m[' + emoji_name + ']\u001b[0m', end='\r')
 
     r = requests.post(
         'https://slack.com/api/users.profile.set',
