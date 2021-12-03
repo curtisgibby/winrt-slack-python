@@ -176,7 +176,7 @@ async def get_media_info():
     sessions = await MediaManager.request_async()
     current_session = sessions.get_current_session()
     if current_session:  # there needs to be a media session running
-        if current_session.source_app_user_model_id == 'chrome.exe' or current_session.source_app_user_model_id == 'firefox.exe':
+        if current_session.source_app_user_model_id == 'chrome.exe' or current_session.source_app_user_model_id == 'firefox.exe' or current_session.source_app_user_model_id.endswith('.tmp'):
             return previous_media_info
         info = await current_session.try_get_media_properties_async()
         info_dict = {song_attr: info.__getattribute__(song_attr) for song_attr in dir(info) if song_attr[0] != '_'}
