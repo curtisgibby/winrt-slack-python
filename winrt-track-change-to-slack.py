@@ -131,7 +131,7 @@ def get_status_emoji():
 def set_slack_status():
     if current_media_info['artist'] == '' or current_media_info['title'] == '':
         return False
-    status_text = 'Now Playing: ' + current_media_info['artist'] + ' - ' + current_media_info['title']
+    status_text = 'Now Playing: ' + current_media_info['artist'][:50] + ('...' if len(current_media_info['artist']) > 50 else '') + ' - ' + current_media_info['title']
     status_text = status_text[:97] + ('...' if len(status_text) > 97 else '')
 
     status_emoji = get_status_emoji()
