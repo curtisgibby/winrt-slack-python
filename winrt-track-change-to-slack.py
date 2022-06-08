@@ -101,7 +101,8 @@ def upload_file_to_slack(local_file):
 
         r = requests.post(
             'https://slack.com/api/emoji.add',
-            data = postBody, files = files
+            data = postBody,
+            files = files
         )
     
     if os.path.exists(local_file):
