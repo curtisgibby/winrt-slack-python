@@ -5,6 +5,7 @@ import json
 import random
 import requests
 import os
+import pprint
 from time import sleep
 from time import strftime
 from winrt.windows.storage.streams import \
@@ -181,7 +182,7 @@ async def get_media_info():
             return previous_media_info
         info = await current_session.try_get_media_properties_async()
         info_dict = {song_attr: info.__getattribute__(song_attr) for song_attr in dir(info) if song_attr[0] != '_'}
-        info_dict['genres'] = list(info_dict['genres'])
+        # pprint.pprint(info_dict) # debug!
 
         return info_dict
 
