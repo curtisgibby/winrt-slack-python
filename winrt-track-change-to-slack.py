@@ -14,7 +14,7 @@ from winrt.windows.media.control import \
     GlobalSystemMediaTransportControlsSessionManager as MediaManager
 
 def get_default_status_emoji():
-        return random.choice([
+    return random.choice([
         ':cd:',
         ':headphones:',
         ':musical_note:',
@@ -117,7 +117,7 @@ def upload_file_to_slack(local_file):
             return False
     else:
         # r.raise_for_status() # debug!
-        return False;
+        return False
     
     return False
 
@@ -138,12 +138,11 @@ def set_slack_status():
 
     status_emoji = get_status_emoji()
 
-    # try:
-    #     length = metadata['mpris:length'] / 1000000 # comes in as microseconds
-    # except:
-    #     length = 180 # 3 minutes
-    length = 300 # 5 minutes
-        
+    try:
+        length = current_media_info["length"]
+    except:
+        length = 180 # 3 minutes
+
     expiration_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=length)
 
     profile = {
@@ -157,7 +156,7 @@ def set_slack_status():
         'token': slack_token,
     }
 
-    print('[ ] \u001b[36m' + strftime(time_format) + ' - Attempting to set status: \u001b[0m' + status_text + ' \u001b[33m[' + emoji_name + ']\u001b[0m', end='\r')
+    print('[ ] \u001b[36m' + strftime(time_format) + ' \u001b[33m[' + status_emoji + '] \u001b[0m' + status_text, end='\r')
 
     r = requests.post(
         'https://slack.com/api/users.profile.set',
@@ -182,12 +181,12 @@ async def get_media_info():
             return previous_media_info
         info = await current_session.try_get_media_properties_async()
         info_dict = {song_attr: info.__getattribute__(song_attr) for song_attr in dir(info) if song_attr[0] != '_'}
-        # pprint.pprint(info_dict) # debug!
+        info_dict |= [('length', int(current_session.get_timeline_properties().end_time.duration / 10000000))]
 
         return info_dict
 
     print('No players playing')
-    quit();
+    quit()
 
 
 try:
@@ -195,19 +194,19 @@ try:
         config = json.load(config_file)
 except IOError as error:
     print('Unable to read `config.json` file')
-    quit();
+    quit()
 
 try:
     slack_token = config['slack-token']
 except Exception as error:
     print('Config value `slack-token` not defined in `config.json`')
-    quit();
+    quit()
 
 try:
     time_format = config['time-format']
 except Exception as error:
     print('Config value `time-format` not defined in `config.json`')
-    quit();
+    quit()
 
 try:
     emoji_name = config['emoji-name']
@@ -232,6 +231,13 @@ while True:
     try:
         current_media_info = asyncio.run(get_media_info())
     except RuntimeError:
+        current_media_info = previous_media_info
+
+    if current_media_info is None:
+        current_media_info = previous_media_info
+
+    # Avoid sending advertisement titles as now-listening statuses
+    if any(x in current_media_info['title'] for x in (':05', ':06', ':15', ':30', ' | ')):
         current_media_info = previous_media_info
 
     if current_media_info['artist'] != previous_media_info['artist'] or current_media_info['title'] != previous_media_info['title']:
