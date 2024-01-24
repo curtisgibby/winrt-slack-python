@@ -118,8 +118,6 @@ def upload_file_to_slack(local_file):
     else:
         # r.raise_for_status() # debug!
         return False
-    
-    return False
 
 def get_status_emoji():
     local_file = get_local_file()
