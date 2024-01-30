@@ -38,8 +38,11 @@ def get_local_file():
     byte_buffer = buffer_reader.read_bytes(thumb_read_buffer.length)
     local_filename = 'media_thumb.jpg'
 
-    with open(local_filename, 'wb+') as fobj:
-        fobj.write(bytearray(byte_buffer))
+    try:
+        with open(local_filename, 'wb+') as fobj:
+            fobj.write(bytearray(byte_buffer))
+    except Exception as error:
+        return False
 
     return local_filename
 
