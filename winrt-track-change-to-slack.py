@@ -140,6 +140,7 @@ def set_slack_status():
     status_emoji = get_status_emoji()
 
     expiration_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=current_media_info["length"])
+    local_expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=current_media_info["length"])
 
     profile = {
         'status_text': status_text,
@@ -152,7 +153,10 @@ def set_slack_status():
         'token': slack_token,
     }
 
-    print('[ ] \u001b[36m' + strftime(time_format) + ' \u001b[33m[' + status_emoji + '] \u001b[0m' + status_text, end='\r')
+    print('[ ] \u001b[36m' + strftime(time_format) +
+          ' → ' + local_expiration_time.strftime(time_format) +
+          ' \u001b[33m[' + status_emoji + ']' +
+          ' \u001b[0m' + status_text, end='\r')
 
     r = requests.post(
         'https://slack.com/api/users.profile.set',
