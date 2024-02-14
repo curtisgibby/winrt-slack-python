@@ -139,12 +139,7 @@ def set_slack_status():
 
     status_emoji = get_status_emoji()
 
-    try:
-        length = current_media_info["length"]
-    except:
-        length = 180 # 3 minutes
-
-    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=length)
+    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(seconds=current_media_info["length"])
 
     profile = {
         'status_text': status_text,
@@ -182,8 +177,14 @@ async def get_media_info():
             return previous_media_info
         info = await current_session.try_get_media_properties_async()
         info_dict = {song_attr: info.__getattribute__(song_attr) for song_attr in dir(info) if song_attr[0] != '_'}
-        info_dict |= [('length', int(current_session.get_timeline_properties().end_time.duration / 10000000))]
+        try:
+            length = int(current_session.get_timeline_properties().end_time.duration / 10000000)
+        except AttributeError:
+            length = 0
 
+        if length == 0:
+            length = 180 # 3 minutes
+        info_dict |= [('length', length)]
         return info_dict
 
     print('No players playing')
