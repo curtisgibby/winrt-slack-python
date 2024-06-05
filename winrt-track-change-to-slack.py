@@ -110,7 +110,7 @@ def upload_file_to_slack(local_file):
         )
     
     if os.path.exists(local_file):
-          os.remove(local_file)
+        os.remove(local_file)
 
     if(r.ok):
         parsed = json.loads(r.text)
